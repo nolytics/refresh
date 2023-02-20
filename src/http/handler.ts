@@ -1,20 +1,23 @@
-import { Atlas } from "../config";
+import { Atlas, GitHub } from "../config";
 import { hitsToPageSummary } from "../data";
-import { findHitDocumentsRequest } from "./request";
-import { fromFindHitsResponse } from "./transform";
+import { findHitDocumentsRequest, getNolyticsJsonFileRequest, uploadNolyticsJsonFileRequest } from "./request";
+import { fromFindHitsResponse, fromGetNolyticsJsonFileResponse } from "./transform";
 
-export default async function (atlas: Atlas): Promise<void> {
-    const findHitsRequest = findHitDocumentsRequest(atlas);
+export default async function (config: Atlas & GitHub): Promise<void> {
+    const findHitsRequest = findHitDocumentsRequest(config);
 
     try {
-        const findHitsResponse = await fetch(findHitsRequest, { body: findHitsRequest.body });
+        const pageSummary = await fetch(findHitsRequest, { body: findHitsRequest.body })
+            .then((x) => fromFindHitsResponse(x))
+            .then((x) => hitsToPageSummary(x));
 
-        if (findHitsResponse.ok) {
-            const hits = await fromFindHitsResponse(findHitsResponse);
-            const pageSummary = hitsToPageSummary(hits);
-
-            console.log(JSON.stringify(pageSummary, null, 2));
-        }
+        await fetch(getNolyticsJsonFileRequest(config))
+            .then((x) => fromGetNolyticsJsonFileResponse(x))
+            .then((x) => uploadNolyticsJsonFileRequest(config, pageSummary, x))
+            .then((x) => fetch(x, { body: x.body }))
+            .then((x) => console.info(`upload nolytics json file status: ${x.status}`));
+    } catch (err) {
+        console.error(err);
     } finally {
         return Promise.resolve();
     }
