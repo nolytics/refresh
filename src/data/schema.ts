@@ -26,10 +26,22 @@ export interface Metadata {
     isMobile: boolean;
 };
 
-export type PageSummary = Array<PageHitsSummary>;
+export interface PageSummary {
+    hitsSummary: HitsSummary;
+    visitorsSummary: VisitorsSummary;
+}
+
+export type HitsSummary = Array<PageHitsSummary>;
 
 export interface PageHitsSummary {
     pageId: PageId;
     hits: Array<Hit>;
     hitsCount: number;
+}
+
+export interface VisitorsSummary {
+    mobileVisitorsCount: number;
+    nonMobileVisitorsCount: number;
+    mobileVisitorsPercentage: number;
+    nonMobileVisitorsPercentage: number;
 }
