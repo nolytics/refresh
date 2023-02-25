@@ -1,15 +1,15 @@
-import { Atlas, GitHub } from "../config";
+import { Atlas, GitHub, Nolytics } from "../config";
 import { hitsToPageSummary } from "../data";
 import { findHitDocumentsRequest, getNolyticsJsonFileRequest, uploadNolyticsJsonFileRequest } from "./request";
 import { fromFindHitsResponse, fromGetNolyticsJsonFileResponse } from "./transform";
 
-export default async function (config: Atlas & GitHub): Promise<void> {
+export default async function (config: Atlas & GitHub & Nolytics): Promise<void> {
     const findHitsRequest = findHitDocumentsRequest(config);
 
     try {
         const pageSummary = await fetch(findHitsRequest, { body: findHitsRequest.body })
             .then((x) => fromFindHitsResponse(x))
-            .then((x) => hitsToPageSummary(x));
+            .then((x) => hitsToPageSummary(config, x));
 
         await fetch(getNolyticsJsonFileRequest(config))
             .then((x) => fromGetNolyticsJsonFileResponse(x))
