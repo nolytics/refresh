@@ -1,18 +1,36 @@
-import { findHitDocumentsBody, uploadNolyticsJsonFileBody } from "./body";
+import { aggregateHitsSummaryBody, aggregateVisitorsSummaryBody, uploadNolyticsJsonFileBody } from "./body";
 import { Atlas, GitHub } from "../config";
-import { mongoFindEndpoint, githubFileEndpoint } from "./endpoints";
+import { mongoAggregateEndpoint, githubFileEndpoint } from "./endpoints";
 import { githubApiHeaders, mongoDataApiHeaders } from "./header";
 import { composeGitHubApiUrl, composeMongoApiUrl } from "./url";
 import { PageSummary } from "../data";
 
-export function findHitDocumentsRequest(
+export function aggregateHitsSummaryRequest(
     atlas: Atlas,
 ): Request {
     const method = 'POST';
-    const url = composeMongoApiUrl(atlas.baseApiHost, atlas.appId, mongoFindEndpoint);
+    const url = composeMongoApiUrl(atlas.baseApiHost, atlas.appId, mongoAggregateEndpoint);
     const headers = mongoDataApiHeaders(atlas.apiKey);
 
-    const data = findHitDocumentsBody(atlas);
+    const data = aggregateHitsSummaryBody(atlas);
+
+    const init = <RequestInit>{
+        headers: headers,
+        method: method,
+        body: data,
+    }
+
+    return new Request(url, init);
+}
+
+export function aggregateVisitorsSummaryRequest(
+    atlas: Atlas,
+): Request {
+    const method = 'POST';
+    const url = composeMongoApiUrl(atlas.baseApiHost, atlas.appId, mongoAggregateEndpoint);
+    const headers = mongoDataApiHeaders(atlas.apiKey);
+
+    const data = aggregateVisitorsSummaryBody(atlas);
 
     const init = <RequestInit>{
         headers: headers,

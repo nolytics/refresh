@@ -1,18 +1,28 @@
 import { Atlas, GitHub } from "../config";
-import { PageSummary } from "../data";
+import { hitsSummaryAggregation, PageSummary, visitorsSummaryAggregation } from "../data";
 
 const hitCollection = 'hit';
-const defaultMaxFindDocumentsLimitCount = 50000;
 
 const defaultUploadNolyticsJsonFileCommitMessage = 'nolytics';
 
-export function findHitDocumentsBody(atlas: Atlas) {
+export function aggregateHitsSummaryBody(atlas: Atlas) {
     return JSON.stringify(
         {
             dataSource: atlas.dataSource,
             database: atlas.database,
             collection: hitCollection,
-            limit: defaultMaxFindDocumentsLimitCount,
+            pipeline: hitsSummaryAggregation,
+        }
+    );
+}
+
+export function aggregateVisitorsSummaryBody(atlas: Atlas) {
+    return JSON.stringify(
+        {
+            dataSource: atlas.dataSource,
+            database: atlas.database,
+            collection: hitCollection,
+            pipeline: visitorsSummaryAggregation,
         }
     );
 }
