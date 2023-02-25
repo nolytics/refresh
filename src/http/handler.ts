@@ -1,15 +1,21 @@
 import { Atlas, GitHub, Nolytics } from "../config";
-import { hitsToPageSummary } from "../data";
-import { findHitDocumentsRequest, getNolyticsJsonFileRequest, uploadNolyticsJsonFileRequest } from "./request";
-import { fromFindHitsResponse, fromGetNolyticsJsonFileResponse } from "./transform";
+import { configToNolyticsMetadata, PageSummary } from "../data";
+import { aggregateHitsSummaryRequest, aggregateVisitorsSummaryRequest, getNolyticsJsonFileRequest, uploadNolyticsJsonFileRequest } from "./request";
+import { fromAggregateHitsSummaryResponse, fromAggregateVisitorsSummaryResponse, fromGetNolyticsJsonFileResponse } from "./transform";
 
 export default async function (config: Atlas & GitHub & Nolytics): Promise<void> {
-    const findHitsRequest = findHitDocumentsRequest(config);
+    const aggHitsSummaryRequest = aggregateHitsSummaryRequest(config);
+    const aggVisitorsSummaryRequest = aggregateVisitorsSummaryRequest(config);
 
     try {
-        const pageSummary = await fetch(findHitsRequest, { body: findHitsRequest.body })
-            .then((x) => fromFindHitsResponse(x))
-            .then((x) => hitsToPageSummary(config, x));
+        const pageSummary = await Promise.all([
+            fetch(aggHitsSummaryRequest, { body: aggHitsSummaryRequest.body }).then((x) => fromAggregateHitsSummaryResponse(x)),
+            fetch(aggVisitorsSummaryRequest, { body: aggVisitorsSummaryRequest.body }).then((x) => fromAggregateVisitorsSummaryResponse(x)),
+        ]).then((x) => <PageSummary>{
+            hitsSummary: x[0],
+            visitorsSummary: x[1],
+            metadata: configToNolyticsMetadata(config),
+        });
 
         await fetch(getNolyticsJsonFileRequest(config))
             .then((x) => fromGetNolyticsJsonFileResponse(x))

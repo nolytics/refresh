@@ -1,6 +1,4 @@
-import { Document } from "../data";
-
-export interface MongoDataApiSuccessResponse<T extends Document> {
+export interface MongoDataApiSuccessResponse<T> {
     documents: Array<T>;
 }
 
