@@ -12,7 +12,6 @@ function hitsToHitsSummary(hits: Array<Hit>): HitsSummary {
 
     return Object.entries(hitsGroup).map((m) => <PageHitsSummary>{
         pageId: m[0],
-        hits: m[1],
         hitsCount: m[1].length,
     });
 }

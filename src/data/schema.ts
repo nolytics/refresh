@@ -35,7 +35,6 @@ export type HitsSummary = Array<PageHitsSummary>;
 
 export interface PageHitsSummary {
     pageId: PageId;
-    hits: Array<Hit>;
     hitsCount: number;
 }
 
