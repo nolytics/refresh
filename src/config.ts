@@ -9,6 +9,7 @@ export interface Env {
     GITHUB_REPOSITORY_BRANCH: string;
     GITHUB_NOLYTICS_JSON_RELATIVE_FILE_PATH: string;
     GITHUB_PERSONAL_ACCESS_TOKEN: string;
+    NOLYTICS_TRACKED_WEBSITE_URL: string;
 }
 
 export interface Atlas {
@@ -27,7 +28,11 @@ export interface GitHub {
     personalAccessToken: string;
 }
 
-export function fromEnv(env: Env): Atlas & GitHub {
+export interface Nolytics {
+    trackedWebsiteUrl: string;
+}
+
+export function fromEnv(env: Env): Atlas & GitHub & Nolytics {
     return {
         apiKey: env.MONGODB_API_KEY,
         appId: env.MONGODB_APP_ID,
@@ -39,5 +44,6 @@ export function fromEnv(env: Env): Atlas & GitHub {
         personalAccessToken: env.GITHUB_PERSONAL_ACCESS_TOKEN,
         repositoryName: env.GITHUB_REPOSITORY_NAME,
         repositoryBranch: env.GITHUB_REPOSITORY_BRANCH,
+        trackedWebsiteUrl: env.NOLYTICS_TRACKED_WEBSITE_URL,
     }
 }

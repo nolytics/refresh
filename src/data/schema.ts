@@ -29,18 +29,24 @@ export interface Metadata {
 export interface PageSummary {
     hitsSummary: HitsSummary;
     visitorsSummary: VisitorsSummary;
-}
+    metadata: NolyticsMetadata;
+};
 
 export type HitsSummary = Array<PageHitsSummary>;
 
 export interface PageHitsSummary {
     pageId: PageId;
     hitsCount: number;
-}
+};
 
 export interface VisitorsSummary {
     mobileVisitorsCount: number;
     nonMobileVisitorsCount: number;
     mobileVisitorsPercentage: number;
     nonMobileVisitorsPercentage: number;
-}
+};
+
+export interface NolyticsMetadata {
+    websiteUrl: string;
+    lastUpdatedMS: number;
+};
