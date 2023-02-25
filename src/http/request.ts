@@ -9,7 +9,7 @@ export function findHitDocumentsRequest(
     atlas: Atlas,
 ): Request {
     const method = 'POST';
-    const url = composeMongoApiUrl(atlas.appId, mongoFindEndpoint);
+    const url = composeMongoApiUrl(atlas.baseApiHost, atlas.appId, mongoFindEndpoint);
     const headers = mongoDataApiHeaders(atlas.apiKey);
 
     const data = findHitDocumentsBody(atlas);

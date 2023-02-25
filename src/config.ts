@@ -3,6 +3,7 @@ export interface Env {
     MONGODB_APP_ID: string;
     MONGODB_DATA_SOURCE: string;
     MONGODB_DATABASE: string;
+    MONGODB_BASE_API_HOST: string;
     GITHUB_OWNER: string;
     GITHUB_REPOSITORY_NAME: string;
     GITHUB_REPOSITORY_BRANCH: string;
@@ -13,6 +14,7 @@ export interface Env {
 export interface Atlas {
     apiKey: string;
     appId: string;
+    baseApiHost: string;
     dataSource: string;
     database: string;
 }
@@ -29,6 +31,7 @@ export function fromEnv(env: Env): Atlas & GitHub {
     return {
         apiKey: env.MONGODB_API_KEY,
         appId: env.MONGODB_APP_ID,
+        baseApiHost: env.MONGODB_BASE_API_HOST,
         database: env.MONGODB_DATABASE,
         dataSource: env.MONGODB_DATA_SOURCE,
         nolyticsJsonRelativeFilePath: env.GITHUB_NOLYTICS_JSON_RELATIVE_FILE_PATH,
