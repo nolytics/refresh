@@ -1,9 +1,11 @@
-import { Hit, HitsSummary, PageHitsSummary, PageSummary, VisitorsSummary } from "./schema";
+import { Nolytics } from "../config";
+import { Hit, HitsSummary, NolyticsMetadata, PageHitsSummary, PageSummary, VisitorsSummary } from "./schema";
 
-export function hitsToPageSummary(hits: Array<Hit>): PageSummary {
+export function hitsToPageSummary(nolytics: Nolytics, hits: Array<Hit>): PageSummary {
     return {
         hitsSummary: hitsToHitsSummary(hits),
         visitorsSummary: hitsToVisitorsSummary(hits),
+        metadata: configToNolyticsMetadata(nolytics),
     }
 }
 
@@ -27,6 +29,13 @@ function hitsToVisitorsSummary(hits: Array<Hit>): VisitorsSummary {
         nonMobileVisitorsCount: nonMobileVisitorsCount,
         mobileVisitorsPercentage: mobileVisitorsCount / visitorsCount,
         nonMobileVisitorsPercentage: nonMobileVisitorsCount / visitorsCount,
+    };
+}
+
+function configToNolyticsMetadata(nolytics: Nolytics): NolyticsMetadata {
+    return {
+        lastUpdatedMS: Date.now(),
+        websiteUrl: nolytics.trackedWebsiteUrl,
     };
 }
 
