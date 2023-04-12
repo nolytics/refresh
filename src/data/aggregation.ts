@@ -25,88 +25,122 @@ export const hitsSummaryAggregation = [
 export const visitorsSummaryAggregation = [
     {
         $group: {
-            _id: '$metadata.isMobile',
+            _id: {
+                anonymizedId: "$client.anonymizedId",
+                isMobile: "$metadata.isMobile",
+            },
             count: {
-                $count: {}
-            }
-        }
+                $count: {},
+            },
+        },
     },
     {
         $project: {
-            mobileVisitorsCount: {
+            mobileVisitors: {
                 $cond: {
                     if: {
-                        $eq: [
-                            '$_id', true
-                        ]
+                        $eq: ["$_id.isMobile", true],
                     },
-                    then: '$count',
-                    else: '$$REMOVE'
-                }
+                    then: "$count",
+                    else: "$$REMOVE",
+                },
             },
-            nonMobileVisitorsCount: {
+            nonMobileVisitors: {
                 $cond: {
                     if: {
-                        $eq: [
-                            '$_id', false
-                        ]
+                        $eq: ["$_id.isMobile", false],
                     },
-                    then: '$count',
-                    else: '$$REMOVE'
-                }
-            }
-        }
+                    then: "$count",
+                    else: "$$REMOVE",
+                },
+            },
+        },
     },
     {
         $group: {
             _id: null,
-            nonMobileVisitorsCount: {
-                $push: '$nonMobileVisitorsCount'
+            nonMobileVisitors: {
+                $push: "$nonMobileVisitors",
             },
-            mobileVisitorsCount: {
-                $push: '$mobileVisitorsCount'
-            }
-        }
+            mobileVisitors: {
+                $push: "$mobileVisitors",
+            },
+        },
     },
     {
         $project: {
-            mobileVisitorsCount: {
-                $arrayElemAt: [
-                    '$mobileVisitorsCount', 0
-                ]
+            uniqueMobileVisitorsCount: {
+                $size: "$mobileVisitors",
             },
-            nonMobileVisitorsCount: {
-                $arrayElemAt: [
-                    '$nonMobileVisitorsCount', 0
-                ]
-            }
-        }
+            allMobileVisitorsCount: {
+                $sum: "$mobileVisitors",
+            },
+            uniqueNonMobileVisitorsCount: {
+                $size: "$nonMobileVisitors",
+            },
+            allNonMobileVisitorsCount: {
+                $sum: "$nonMobileVisitors",
+            },
+        },
     },
     {
         $project: {
-            mobileVisitorsCount: '$mobileVisitorsCount',
-            nonMobileVisitorsCount: '$nonMobileVisitorsCount',
-            mobileVisitorsPercentage: {
+            uniqueMobileVisitorsCount:
+                "$uniqueMobileVisitorsCount",
+            uniqueNonMobileVisitorsCount:
+                "$uniqueNonMobileVisitorsCount",
+            uniqueMobileVisitorsPercentage: {
                 $divide: [
-                    '$mobileVisitorsCount', {
+                    "$uniqueMobileVisitorsCount",
+                    {
                         $sum: [
-                            '$mobileVisitorsCount', '$nonMobileVisitorsCount'
-                        ]
-                    }
-                ]
+                            "$uniqueMobileVisitorsCount",
+                            "$uniqueNonMobileVisitorsCount",
+                        ],
+                    },
+                ],
             },
-            nonMobileVisitorsPercentage: {
+            uniqueNonMobileVisitorsPercentage: {
                 $divide: [
-                    '$nonMobileVisitorsCount', {
+                    "$uniqueNonMobileVisitorsCount",
+                    {
                         $sum: [
-                            '$mobileVisitorsCount', '$nonMobileVisitorsCount'
-                        ]
-                    }
-                ]
-            }
-        }
+                            "$uniqueNonMobileVisitorsCount",
+                            "$uniqueMobileVisitorsCount",
+                        ],
+                    },
+                ],
+            },
+            allMobileVisitorsCount:
+                "$allMobileVisitorsCount",
+            allNonMobileVisitorsCount:
+                "$allNonMobileVisitorsCount",
+            allMobileVisitorsPercentage: {
+                $divide: [
+                    "$allMobileVisitorsCount",
+                    {
+                        $sum: [
+                            "$allMobileVisitorsCount",
+                            "$allNonMobileVisitorsCount",
+                        ],
+                    },
+                ],
+            },
+            allNonMobileVisitorsPercentage: {
+                $divide: [
+                    "$allNonMobileVisitorsCount",
+                    {
+                        $sum: [
+                            "$allNonMobileVisitorsCount",
+                            "$allMobileVisitorsCount",
+                        ],
+                    },
+                ],
+            },
+        },
     },
     {
-        $unset: '_id'
-    }
+        $unset: "_id",
+    },
+
 ];
