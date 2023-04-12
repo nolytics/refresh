@@ -40,10 +40,14 @@ export interface PageHitsSummary {
 };
 
 export interface VisitorsSummary {
-    mobileVisitorsCount: number;
-    nonMobileVisitorsCount: number;
-    mobileVisitorsPercentage: number;
-    nonMobileVisitorsPercentage: number;
+    allMobileVisitorsCount: number;
+    allNonMobileVisitorsCount: number;
+    allMobileVisitorsPercentage: number;
+    allNonMobileVisitorsPercentage: number;
+    uniqueMobileVisitorsCount: number;
+    uniqueNonMobileVisitorsCount: number;
+    uniqueMobileVisitorsPercentage: number;
+    uniqueNonMobileVisitorsPercentage: number;
 };
 
 export interface NolyticsMetadata {

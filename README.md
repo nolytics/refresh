@@ -10,6 +10,8 @@ This worker was bootstrapped and configured with [wrangler](https://github.com/c
 
 Run the local server via `npm run start`
 
+Trigger an instant cronjob via `curl "http://localhost:8787/__scheduled?cron=*+*+*+*+*"`
+
 ## Deploy
 
 Setup worker environment variables with the following one-line:
