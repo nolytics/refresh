@@ -15,8 +15,10 @@ export default async function (config: Atlas & GitHub & Nolytics): Promise<void>
             fetch(aggUniqueVisitorsCountByCountryRequest, { body: aggUniqueVisitorsCountByCountryRequest.body }).then((x) => fromAggregateUniqueVisitorsCountByCountryResponse(x)),
         ]).then((x) => <PageSummary>{
             hitsSummary: x[0],
-            visitorsDeviceSummary: x[1],
-            visitorsCountrySummary: x[2],
+            visitorsSummary: {
+                devices: x[1],
+                countries: x[2],
+            },
             metadata: configToNolyticsMetadata(config),
         });
 

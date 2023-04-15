@@ -28,8 +28,7 @@ export interface Metadata {
 
 export interface PageSummary {
     hitsSummary: HitsSummary;
-    visitorsDeviceSummary: VisitorsDeviceSummary;
-    visitorsCountrySummary: VisitorsCountrySummary;
+    visitorsSummary: VisitorsSummary;
     metadata: NolyticsMetadata;
 };
 
@@ -38,6 +37,11 @@ export type HitsSummary = Array<PageHitsSummary>;
 export interface PageHitsSummary {
     pageId: PageId;
     hitsCount: number;
+};
+
+export interface VisitorsSummary {
+    devices: VisitorsDeviceSummary
+    countries: VisitorsCountrySummary
 };
 
 export interface VisitorsDeviceSummary {
