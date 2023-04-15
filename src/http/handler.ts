@@ -1,21 +1,21 @@
 import { Atlas, GitHub, Nolytics } from "../config";
 import { configToNolyticsMetadata, PageSummary } from "../data";
-import { aggregateHitsSummaryRequest, aggregateUniqueVisitorsCountByCountryRequest, aggregateVisitorsSummaryRequest, getNolyticsJsonFileRequest, uploadNolyticsJsonFileRequest } from "./request";
-import { fromAggregateHitsSummaryResponse, fromAggregateUniqueVisitorsCountByCountryResponse, fromAggregateVisitorsSummaryResponse, fromGetNolyticsJsonFileResponse } from "./transform";
+import { aggregateHitsSummaryRequest, aggregateUniqueVisitorsCountByCountryRequest, aggregateVisitorsDeviceSummaryRequest, getNolyticsJsonFileRequest, uploadNolyticsJsonFileRequest } from "./request";
+import { fromAggregateHitsSummaryResponse, fromAggregateUniqueVisitorsCountByCountryResponse, fromAggregateVisitorsDeviceSummaryResponse, fromGetNolyticsJsonFileResponse } from "./transform";
 
 export default async function (config: Atlas & GitHub & Nolytics): Promise<void> {
     const aggHitsSummaryRequest = aggregateHitsSummaryRequest(config);
-    const aggVisitorsSummaryRequest = aggregateVisitorsSummaryRequest(config);
+    const aggVisitorsDeviceSummaryRequest = aggregateVisitorsDeviceSummaryRequest(config);
     const aggUniqueVisitorsCountByCountryRequest = aggregateUniqueVisitorsCountByCountryRequest(config);
 
     try {
         const pageSummary = await Promise.all([
             fetch(aggHitsSummaryRequest, { body: aggHitsSummaryRequest.body }).then((x) => fromAggregateHitsSummaryResponse(x)),
-            fetch(aggVisitorsSummaryRequest, { body: aggVisitorsSummaryRequest.body }).then((x) => fromAggregateVisitorsSummaryResponse(x)),
+            fetch(aggVisitorsDeviceSummaryRequest, { body: aggVisitorsDeviceSummaryRequest.body }).then((x) => fromAggregateVisitorsDeviceSummaryResponse(x)),
             fetch(aggUniqueVisitorsCountByCountryRequest, { body: aggUniqueVisitorsCountByCountryRequest.body }).then((x) => fromAggregateUniqueVisitorsCountByCountryResponse(x)),
         ]).then((x) => <PageSummary>{
             hitsSummary: x[0],
-            visitorsSummary: x[1],
+            visitorsDeviceSummary: x[1],
             visitorsCountrySummary: x[2],
             metadata: configToNolyticsMetadata(config),
         });

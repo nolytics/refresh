@@ -28,7 +28,7 @@ export interface Metadata {
 
 export interface PageSummary {
     hitsSummary: HitsSummary;
-    visitorsSummary: VisitorsSummary;
+    visitorsDeviceSummary: VisitorsDeviceSummary;
     visitorsCountrySummary: VisitorsCountrySummary;
     metadata: NolyticsMetadata;
 };
@@ -40,7 +40,7 @@ export interface PageHitsSummary {
     hitsCount: number;
 };
 
-export interface VisitorsSummary {
+export interface VisitorsDeviceSummary {
     allMobileVisitorsCount: number;
     allNonMobileVisitorsCount: number;
     allMobileVisitorsPercentage: number;

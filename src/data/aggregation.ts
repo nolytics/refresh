@@ -22,7 +22,7 @@ export const hitsSummaryAggregation = [
     }
 ];
 
-export const visitorsSummaryAggregation = [
+export const visitorsDeviceSummaryAggregation = [
     {
         $group: {
             _id: {
