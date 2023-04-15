@@ -1,4 +1,4 @@
-import { HitsSummary, PageHitsSummary, VisitorsSummary } from "../data";
+import { CountryVisitorsSummary, HitsSummary, PageHitsSummary, VisitorsCountrySummary, VisitorsSummary } from "../data";
 import { GitHubApiGetFileSuccessResponse, MongoDataApiSuccessResponse } from "./response";
 
 export function fromAggregateHitsSummaryResponse(response: Response): Promise<HitsSummary> {
@@ -7,6 +7,10 @@ export function fromAggregateHitsSummaryResponse(response: Response): Promise<Hi
 
 export function fromAggregateVisitorsSummaryResponse(response: Response): Promise<VisitorsSummary> {
     return response.text().then((x) => <MongoDataApiSuccessResponse<VisitorsSummary>>{ ...JSON.parse(x) }).then((x) => x.documents).then((x) => x[0]);
+}
+
+export function fromAggregateUniqueVisitorsCountByCountryResponse(response: Response): Promise<VisitorsCountrySummary> {
+    return response.text().then((x) => <MongoDataApiSuccessResponse<CountryVisitorsSummary>>{ ...JSON.parse(x) }).then((x) => x.documents);
 }
 
 export function fromGetNolyticsJsonFileResponse(response: Response): Promise<string | undefined> {

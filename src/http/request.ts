@@ -1,4 +1,4 @@
-import { aggregateHitsSummaryBody, aggregateVisitorsSummaryBody, uploadNolyticsJsonFileBody } from "./body";
+import { aggregateHitsSummaryBody, aggregateUniqueVisitorsCountByCountryBody, aggregateVisitorsSummaryBody, uploadNolyticsJsonFileBody } from "./body";
 import { Atlas, GitHub } from "../config";
 import { mongoAggregateEndpoint, githubFileEndpoint } from "./endpoints";
 import { githubApiHeaders, mongoDataApiHeaders } from "./header";
@@ -31,6 +31,24 @@ export function aggregateVisitorsSummaryRequest(
     const headers = mongoDataApiHeaders(atlas.apiKey);
 
     const data = aggregateVisitorsSummaryBody(atlas);
+
+    const init = <RequestInit>{
+        headers: headers,
+        method: method,
+        body: data,
+    }
+
+    return new Request(url, init);
+}
+
+export function aggregateUniqueVisitorsCountByCountryRequest(
+    atlas: Atlas,
+): Request {
+    const method = 'POST';
+    const url = composeMongoApiUrl(atlas.baseApiHost, atlas.appId, mongoAggregateEndpoint);
+    const headers = mongoDataApiHeaders(atlas.apiKey);
+
+    const data = aggregateUniqueVisitorsCountByCountryBody(atlas);
 
     const init = <RequestInit>{
         headers: headers,
