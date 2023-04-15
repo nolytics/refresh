@@ -40,6 +40,11 @@ export interface PageHitsSummary {
 };
 
 export interface VisitorsSummary {
+    devices: VisitorsDeviceSummary
+    countries: VisitorsCountrySummary
+};
+
+export interface VisitorsDeviceSummary {
     allMobileVisitorsCount: number;
     allNonMobileVisitorsCount: number;
     allMobileVisitorsPercentage: number;
@@ -48,6 +53,13 @@ export interface VisitorsSummary {
     uniqueNonMobileVisitorsCount: number;
     uniqueMobileVisitorsPercentage: number;
     uniqueNonMobileVisitorsPercentage: number;
+};
+
+export type VisitorsCountrySummary = Array<CountryVisitorsSummary>;
+
+export interface CountryVisitorsSummary {
+    country: string;
+    uniqueVisitorsCount: number;
 };
 
 export interface NolyticsMetadata {

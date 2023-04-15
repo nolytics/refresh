@@ -1,5 +1,5 @@
 import { Atlas, GitHub } from "../config";
-import { hitsSummaryAggregation, PageSummary, visitorsSummaryAggregation } from "../data";
+import { hitsSummaryAggregation, PageSummary, uniqueVisitorsCountByCountryAggregation, visitorsDeviceSummaryAggregation } from "../data";
 
 const hitCollection = 'hit';
 
@@ -16,13 +16,24 @@ export function aggregateHitsSummaryBody(atlas: Atlas) {
     );
 }
 
-export function aggregateVisitorsSummaryBody(atlas: Atlas) {
+export function aggregateVisitorsDeviceSummaryBody(atlas: Atlas) {
     return JSON.stringify(
         {
             dataSource: atlas.dataSource,
             database: atlas.database,
             collection: hitCollection,
-            pipeline: visitorsSummaryAggregation,
+            pipeline: visitorsDeviceSummaryAggregation,
+        }
+    );
+}
+
+export function aggregateUniqueVisitorsCountByCountryBody(atlas: Atlas) {
+    return JSON.stringify(
+        {
+            dataSource: atlas.dataSource,
+            database: atlas.database,
+            collection: hitCollection,
+            pipeline: uniqueVisitorsCountByCountryAggregation,
         }
     );
 }

@@ -22,7 +22,7 @@ export const hitsSummaryAggregation = [
     }
 ];
 
-export const visitorsSummaryAggregation = [
+export const visitorsDeviceSummaryAggregation = [
     {
         $group: {
             _id: {
@@ -143,4 +143,62 @@ export const visitorsSummaryAggregation = [
         $unset: "_id",
     },
 
+];
+
+export const uniqueVisitorsCountByCountryAggregation = [
+    {
+        $project: {
+            anonymizedId: "$client.anonymizedId",
+            country: "$client.country",
+        },
+    },
+    {
+        $group: {
+            _id: "$anonymizedId",
+            country: {
+                $first: "$country",
+            },
+            count: {
+                $count: {},
+            },
+        },
+    },
+    {
+        $sort: {
+            count: -1,
+        },
+    },
+    {
+        $addFields: {
+            anonymizedId: "$_id",
+            country: "$country",
+        },
+    },
+    {
+        $match: {
+            country: {
+                $ne: null,
+            },
+        },
+    },
+    {
+        $group: {
+            _id: "$country",
+            visitors: {
+                $push: "$anonymizedId",
+            },
+        },
+    },
+    {
+        $project:
+        {
+            country: "$_id",
+            uniqueVisitorsCount: {
+                $size: "$visitors",
+            },
+        },
+    },
+    {
+        $unset: "_id",
+    },
 ];
