@@ -1,7 +1,9 @@
 import { Atlas, GitHub, Nolytics } from "../config";
 import { configToNolyticsMetadata, PageSummary } from "../data";
-import { aggregateHitsSummaryRequest, aggregateUniqueVisitorsCountByCountryRequest, aggregateVisitorsDeviceSummaryRequest, getNolyticsJsonFileRequest, uploadNolyticsJsonFileRequest } from "./request";
-import { fromAggregateHitsSummaryResponse, fromAggregateUniqueVisitorsCountByCountryResponse, fromAggregateVisitorsDeviceSummaryResponse, fromGetNolyticsJsonFileResponse } from "./transform";
+import { aggregateHitsSummaryRequest, aggregateUniqueVisitorsCountByCountryRequest, aggregateVisitorsDeviceSummaryRequest } from "./request";
+import { fromAggregateHitsSummaryResponse, fromAggregateUniqueVisitorsCountByCountryResponse, fromAggregateVisitorsDeviceSummaryResponse, fromUpsertNolyticsJsonFileResponse } from "./transform";
+import { default as upsert, GitHubRepository } from '@web-pacotes/github-upsert';
+
 
 export default async function (config: Atlas & GitHub & Nolytics): Promise<void> {
     const aggHitsSummaryRequest = aggregateHitsSummaryRequest(config);
@@ -22,11 +24,17 @@ export default async function (config: Atlas & GitHub & Nolytics): Promise<void>
             metadata: configToNolyticsMetadata(config),
         });
 
-        await fetch(getNolyticsJsonFileRequest(config))
-            .then((x) => fromGetNolyticsJsonFileResponse(x))
-            .then((x) => uploadNolyticsJsonFileRequest(config, pageSummary, x))
-            .then((x) => fetch(x, { body: x.body }))
-            .then((x) => console.info(`upload nolytics json file status: ${x.status}`));
+        const githubRepository = <GitHubRepository>{
+            name: config.repositoryName,
+            owner: config.owner,
+            pat: config.personalAccessToken,
+        };
+
+        const pageSummaryBytes = new TextEncoder().encode(JSON.stringify(pageSummary));
+
+        await upsert(githubRepository, pageSummaryBytes, config.nolyticsJsonRelativeFilePath)
+            .then(fromUpsertNolyticsJsonFileResponse)
+            .then(console.info);
     } catch (err) {
         console.error(err);
     } finally {
