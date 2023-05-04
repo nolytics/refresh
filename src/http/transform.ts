@@ -1,5 +1,6 @@
+import { GithubFile } from "@web-pacotes/github-upsert";
 import { CountryVisitorsSummary, HitsSummary, PageHitsSummary, VisitorsCountrySummary, VisitorsDeviceSummary } from "../data";
-import { GitHubApiGetFileSuccessResponse, MongoDataApiSuccessResponse } from "./response";
+import { MongoDataApiSuccessResponse } from "./response";
 
 export function fromAggregateHitsSummaryResponse(response: Response): Promise<HitsSummary> {
     return response.text().then((x) => <MongoDataApiSuccessResponse<PageHitsSummary>>{ ...JSON.parse(x) }).then((x) => x.documents);
@@ -13,6 +14,10 @@ export function fromAggregateUniqueVisitorsCountByCountryResponse(response: Resp
     return response.text().then((x) => <MongoDataApiSuccessResponse<CountryVisitorsSummary>>{ ...JSON.parse(x) }).then((x) => x.documents);
 }
 
-export function fromGetNolyticsJsonFileResponse(response: Response): Promise<string | undefined> {
-    return response.text().then((x) => <GitHubApiGetFileSuccessResponse>{ ...JSON.parse(x) }).then((x) => x.sha);
+export function fromUpsertNolyticsJsonFileResponse(file: GithubFile | undefined): String {
+    if (!file) {
+        return 'failed to upload nolytics json!';
+    }
+
+    return 'uploaded nolytics json';
 }

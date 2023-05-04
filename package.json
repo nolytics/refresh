@@ -10,5 +10,8 @@
   "scripts": {
     "start": "wrangler dev --test-scheduled",
     "deploy": "wrangler publish"
+  },
+  "dependencies": {
+    "@web-pacotes/github-upsert": "^0.0.3"
   }
 }
