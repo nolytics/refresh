@@ -12,6 +12,6 @@
     "deploy": "wrangler publish"
   },
   "dependencies": {
-    "@web-pacotes/github-upsert": "^0.0.3"
+    "@web-pacotes/github-upsert": "^0.0.4"
   }
 }
